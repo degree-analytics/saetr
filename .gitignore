@@ -1,0 +1,24 @@
+# User-specific config (contains AWS account IDs)
+config/aws-config
+
+# Logs
+*.log
+logs/
+
+# Secrets (should never be committed)
+*.env
+.env.*
+secrets/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Cache
+.cache/

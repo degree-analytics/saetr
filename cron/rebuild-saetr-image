@@ -1,0 +1,27 @@
+# =============================================================================
+# Saetr - Nightly image rebuild cron job
+# =============================================================================
+#
+# INSTALLATION:
+#   1. Copy this file:
+#      sudo cp cron/rebuild-saetr-image /etc/cron.d/saetr-rebuild
+#
+#   2. Edit the file to set your username and paths:
+#      sudo nano /etc/cron.d/saetr-rebuild
+#
+#   3. Create the log directory:
+#      mkdir -p ~/logs
+#
+# CUSTOMIZATION:
+#   - Replace '<username>' with your username (e.g., 'jp', 'ubuntu')
+#   - The script auto-detects SAETR_DIR from its location
+#   - Logs go to ~/logs/saetr-rebuild.log
+#
+# =============================================================================
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Rebuild Saetr dev image at 4am daily
+# IMPORTANT: Replace <username> with your actual username
+0 4 * * * <username> /home/<username>/saetr/scripts/rebuild-image.sh >> /home/<username>/logs/saetr-rebuild.log 2>&1

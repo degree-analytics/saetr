@@ -1,0 +1,12 @@
+# =============================================================================
+# Saetr Development Environment - Direnv Configuration
+# =============================================================================
+# This file is copied to ~/.envrc in the container.
+# Direnv's `dotenv` command safely parses KEY=VALUE files without shell execution.
+# =============================================================================
+
+# Load API tokens and credentials from mounted secrets directory
+# dotenv treats values as literal strings (no shell expansion/execution)
+if [ -f ~/.config/secrets/common.env ]; then
+    dotenv ~/.config/secrets/common.env
+fi

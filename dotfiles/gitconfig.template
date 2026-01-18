@@ -1,0 +1,34 @@
+# =============================================================================
+# Saetr Development Environment - Git Configuration Template
+# =============================================================================
+# Copy this file to ~/.gitconfig inside your container and customize:
+#   cp /path/to/saetr/dotfiles/gitconfig.template ~/.gitconfig
+# =============================================================================
+
+[user]
+    # TODO: Set your name and email
+    name = Your Name
+    email = your.email@example.com
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[core]
+    editor = vim
+    autocrlf = input
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --decorate
+
+[color]
+    ui = auto

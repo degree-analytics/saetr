@@ -1,0 +1,16 @@
+# =============================================================================
+# Saetr - AWS Configuration Template
+# =============================================================================
+# 1. Copy this file: cp config/aws-config.template config/aws-config
+# 2. Replace YOUR_ACCOUNT_ID with your AWS account ID
+# 3. Replace YOUR_IAM_USER with your IAM username
+# 4. The config/aws-config file is gitignored (contains your account info)
+# =============================================================================
+
+[profile dev]
+region = us-east-2
+mfa_serial = arn:aws:iam::YOUR_ACCOUNT_ID:mfa/YOUR_IAM_USER
+mfa_process = /home/dev/.config/aws-vault/oathtool-mfa.sh dev
+
+# Uncomment if you need credential_process for tools that don't support aws-vault
+# credential_process = /usr/local/bin/aws-vault exec dev --json

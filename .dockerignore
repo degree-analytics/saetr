@@ -1,0 +1,15 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+docs/
+*.md
+!dotfiles/*.md
+
+# Development
+.vscode/
+.idea/
+
+# OS files
+.DS_Store

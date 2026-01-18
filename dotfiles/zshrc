@@ -1,0 +1,105 @@
+# =============================================================================
+# Saetr Development Environment - ZSH Configuration
+# =============================================================================
+
+# PATH additions
+export PATH="$HOME/.local/bin:$PATH"
+
+# Mise (runtime version manager)
+eval "$(mise activate zsh)"
+
+# Direnv (per-directory environment)
+eval "$(direnv hook zsh)" 2>/dev/null || true
+
+# AWS Vault configuration
+export AWS_VAULT_BACKEND=pass
+
+# Secrets are loaded via direnv (.envrc) using the safe `dotenv` command
+# This avoids shell injection risks from sourcing files directly
+# See ~/.envrc for the configuration
+
+# -----------------------------------------------------------------------------
+# Aliases
+# -----------------------------------------------------------------------------
+
+# General
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Docker
+alias d='docker'
+alias dc='docker compose'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+
+# Git
+alias g='git'
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+alias gd='git diff'
+alias gco='git checkout'
+alias gb='git branch'
+
+# -----------------------------------------------------------------------------
+# Prompt
+# -----------------------------------------------------------------------------
+
+# Simple, informative prompt: user@host:path$
+PROMPT='%F{cyan}%n@%m%f:%F{yellow}%~%f$ '
+
+# -----------------------------------------------------------------------------
+# History
+# -----------------------------------------------------------------------------
+
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_dups
+
+# -----------------------------------------------------------------------------
+# Key bindings
+# -----------------------------------------------------------------------------
+
+bindkey -e  # Emacs-style key bindings
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
+# -----------------------------------------------------------------------------
+# Docker daemon (for Sysbox containers)
+# -----------------------------------------------------------------------------
+
+# Start Docker daemon if not running (Sysbox provides this capability)
+# Run in bash subshell for flock compatibility (zsh doesn't support 200>file syntax)
+start_dockerd() {
+    /bin/bash -c '
+        DOCKERD_LOCK="/tmp/dockerd-startup.lock"
+        DOCKERD_LOG="$HOME/.local/log/dockerd.log"
+        mkdir -p "$(dirname "$DOCKERD_LOG")"
+        (
+            flock -n 200 || exit 0
+            if ! pgrep -x dockerd > /dev/null 2>&1; then
+                if [ -f "$DOCKERD_LOG" ] && [ "$(stat -c%s "$DOCKERD_LOG" 2>/dev/null)" -gt 10485760 ]; then
+                    mv "$DOCKERD_LOG" "${DOCKERD_LOG}.old"
+                fi
+                sudo dockerd >> "$DOCKERD_LOG" 2>&1 &
+                sleep 2
+            fi
+        ) 200>"$DOCKERD_LOCK"
+    '
+}
+
+# Only attempt if we might have dockerd capability
+if [ -S /var/run/docker.sock ] || command -v dockerd &>/dev/null; then
+    if ! pgrep -x dockerd > /dev/null 2>&1; then
+        start_dockerd
+    fi
+fi
